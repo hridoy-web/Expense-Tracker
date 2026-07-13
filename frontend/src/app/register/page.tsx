@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
-import { IoMdEye, IoMdEyeOff } from "react-icons/io";
+import { IoMdEye, IoMdEyeOff, IoMdCheckmarkCircle, IoMdRadioButtonOff } from "react-icons/io";
+import { FiUser, FiMail, FiLock } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
@@ -31,35 +32,34 @@ export default function RegisterPage() {
 
         const formData = new FormData(e.currentTarget);
         const data = Object.fromEntries(formData.entries());
-        // console.log("Registration Data:", name, password, email);
 
-        const name = data.name as string
-        const email = data.email as string
-        const password = data.password as string
+        const name = data.name as string;
+        const email = data.email as string;
+        const passwordValue = data.password as string;
 
-        if (!name || !email || !password) {
-            toast.error('All fields are required.')
-            return
+        if (!name || !email || !passwordValue) {
+            toast.error('All fields are required.');
+            return;
         }
 
         try {
-            const { data, error } = await authClient.signUp.email({
+            const { data: resData, error } = await authClient.signUp.email({
                 name,
                 email,
-                password
-            })
+                password: passwordValue
+            });
 
             if (error) {
-                toast.error(error?.message || "Registration failed!")
-                return
+                toast.error(error?.message || "Registration failed!");
+                return;
             } else {
-                toast.success(`Welcome ${data?.user?.name}`)
-                router.push('/')
-                router.refresh()
+                toast.success(`Welcome ${resData?.user?.name}`);
+                router.push('/');
+                router.refresh();
             }
 
         } catch (error) {
-            console.error(`betterAuth Function Error: ${error}`)
+            console.error(`betterAuth Function Error: ${error}`);
             toast.error("An unexpected error occurred.");
         }
     };
@@ -68,41 +68,60 @@ export default function RegisterPage() {
         await authClient.signIn.social({
             provider: "google",
             callbackURL: '/',
-        })
+        });
     };
 
     return (
-        <div className="fixed inset-0 flex h-screen w-screen items-center justify-center bg-gray-50 text-black px-4 overflow-y-auto">
-            <div className="w-full max-w-md space-y-5 rounded-2xl bg-white p-8 shadow-xl border border-gray-100 my-auto">
-                <h2 className="text-center text-3xl font-bold text-gray-900">Create Account</h2>
-                <p className="text-center text-sm text-gray-500">Get started with your free account</p>
+        <div className="w-full flex items-center justify-center px-4 py-26">
+           
+            <div className="w-full max-w-md space-y-6 p-8 border border-slate-300 rounded-xl">
+                
+                {/* Professional Headline & Branding */}
+                <div className="space-y-2 text-center">
+                    <h2 className="text-3xl font-extrabold tracking-tight text-gray-950">
+                        Create Your Account
+                    </h2>
+                    <p className="text-sm text-gray-500">
+                        Join Expense Tracker to manage your finance smartly
+                    </p>
+                </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* Full Name Input */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Full Name</label>
-                        <input
-                            type="text"
-                            name="name"
-                            required
-                            placeholder="John Doe"
-                            className="mt-1 w-full rounded-xl border border-gray-300 p-3 outline-none focus:border-blue-500"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Email Address</label>
-                        <input
-                            type="email"
-                            name="email"
-                            required
-                            placeholder="name@example.com"
-                            className="mt-1 w-full rounded-xl border border-gray-300 p-3 outline-none focus:border-blue-500"
-                        />
+                        <div className="relative mt-1">
+                            <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
+                            <input
+                                type="text"
+                                name="name"
+                                required
+                                placeholder="John Doe"
+                                className="w-full rounded-xl border border-gray-300 p-3 pl-10 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-black"
+                            />
+                        </div>
                     </div>
 
-                    {/* Password Input with Show/Hide Toggle */}
+                    {/* Email Input */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Email Address</label>
+                        <div className="relative mt-1">
+                            <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
+                            <input
+                                type="email"
+                                name="email"
+                                required
+                                placeholder="name@example.com"
+                                className="w-full rounded-xl border border-gray-300 p-3 pl-10 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-black"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Password Input */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Password</label>
                         <div className="relative mt-1">
+                            <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
                             <input
                                 type={showPassword ? "text" : "password"}
                                 name="password"
@@ -110,7 +129,7 @@ export default function RegisterPage() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="••••••••"
-                                className="w-full rounded-xl border border-gray-300 p-3 pr-10 outline-none focus:border-blue-500"
+                                className="w-full rounded-xl border border-gray-300 p-3 pl-10 pr-10 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-black"
                             />
                             <button
                                 type="button"
@@ -122,25 +141,30 @@ export default function RegisterPage() {
                         </div>
                     </div>
 
-                    {/* Password Real-time Checklist UI */}
-                    <div className="grid grid-cols-2 gap-2 text-xs pt-1">
-                        <div className={`flex items-center gap-1.5 ${isLengthValid ? "text-green-600 font-medium" : "text-gray-400"}`}>
-                            <span>{isLengthValid ? "✓" : "•"}</span> Min 8 characters
+                    {/* Password Real-time Checklist UI with Premium React Icons */}
+                    <div className="grid grid-cols-2 gap-3 text-xs pt-3 pb-2 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                        <div className={`flex items-center gap-2 ${isLengthValid ? "text-green-600 font-semibold" : "text-gray-400 font-normal"}`}>
+                            {isLengthValid ? <IoMdCheckmarkCircle className="text-base shrink-0 text-green-600" /> : <IoMdRadioButtonOff className="text-base shrink-0 text-gray-300" />}
+                            <span>Min 8 characters</span>
                         </div>
-                        <div className={`flex items-center gap-1.5 ${hasUppercase ? "text-green-600 font-medium" : "text-gray-400"}`}>
-                            <span>{hasUppercase ? "✓" : "•"}</span> One uppercase letter
+                        <div className={`flex items-center gap-2 ${hasUppercase ? "text-green-600 font-semibold" : "text-gray-400 font-normal"}`}>
+                            {hasUppercase ? <IoMdCheckmarkCircle className="text-base shrink-0 text-green-600" /> : <IoMdRadioButtonOff className="text-base shrink-0 text-gray-300" />}
+                            <span>One uppercase</span>
                         </div>
-                        <div className={`flex items-center gap-1.5 ${hasLowercase ? "text-green-600 font-medium" : "text-gray-400"}`}>
-                            <span>{hasLowercase ? "✓" : "•"}</span> One lowercase letter
+                        <div className={`flex items-center gap-2 ${hasLowercase ? "text-green-600 font-semibold" : "text-gray-400 font-normal"}`}>
+                            {hasLowercase ? <IoMdCheckmarkCircle className="text-base shrink-0 text-green-600" /> : <IoMdRadioButtonOff className="text-base shrink-0 text-gray-300" />}
+                            <span>One lowercase</span>
                         </div>
-                        <div className={`flex items-center gap-1.5 ${hasNumber ? "text-green-600 font-medium" : "text-gray-400"}`}>
-                            <span>{hasNumber ? "✓" : "•"}</span> One number
+                        <div className={`flex items-center gap-2 ${hasNumber ? "text-green-600 font-semibold" : "text-gray-400 font-normal"}`}>
+                            {hasNumber ? <IoMdCheckmarkCircle className="text-base shrink-0 text-green-600" /> : <IoMdRadioButtonOff className="text-base shrink-0 text-gray-300" />}
+                            <span>One number</span>
                         </div>
                     </div>
 
+                    {/* Submit Button */}
                     <button
                         type="submit"
-                        className="w-full rounded-xl bg-blue-600 p-3 font-semibold text-white transition hover:bg-blue-700"
+                        className="w-full rounded-xl bg-blue-600 p-3.5 font-bold text-white transition hover:bg-blue-700 shadow-md shadow-blue-100 active:scale-[0.99]"
                     >
                         Sign Up
                     </button>
@@ -150,21 +174,22 @@ export default function RegisterPage() {
                     <div className="absolute inset-0 flex items-center">
                         <div className="w-full border-t border-gray-200"></div>
                     </div>
-                    <span className="relative bg-white px-3 text-xs text-gray-400 uppercase">Or continue with</span>
+                    <span className="relative bg-white px-3 text-xs text-gray-400 uppercase tracking-wider font-medium">Or continue with</span>
                 </div>
 
+                {/* Google Sign In Button */}
                 <button
                     type="button"
                     onClick={handleGoogleSignUp}
-                    className="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-300 bg-white p-3 font-medium text-gray-700 transition hover:bg-gray-50"
+                    className="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-300 bg-white p-3.5 font-semibold text-gray-700 transition hover:bg-gray-50 hover:border-gray-400 active:scale-[0.99]"
                 >
-                    <FcGoogle className="h-5 w-5" />
-                    Sign up with Google
+                    <FcGoogle className="h-5 w-5 shrink-0" />
+                    <span>Sign up with Google</span>
                 </button>
 
-                <p className="text-center text-sm text-gray-600">
+                <p className="text-center text-sm text-gray-600 pt-1">
                     Already have an account?{" "}
-                    <Link href="/login" className="text-blue-600 hover:underline font-medium">
+                    <Link href="/login" className="text-blue-600 hover:underline font-bold">
                         Sign In
                     </Link>
                 </p>

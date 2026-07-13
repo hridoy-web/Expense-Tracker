@@ -63,8 +63,10 @@ export default function LoginPage() {
 
 
     return (
-        <div className="fixed inset-0 flex h-screen w-screen items-center justify-center bg-gray-50 text-black px-4 overflow-y-auto">
-            <div className="w-full max-w-md space-y-5 rounded-2xl bg-white p-8 shadow-xl border border-gray-100 my-auto">
+        <div className="w-full flex items-center justify-center px-4 py-26">
+
+            <div className="w-full max-w-md space-y-5 rounded-2xl p-8  border border-slate-300 my-auto">
+
                 <h2 className="text-center text-3xl font-bold text-gray-900">Welcome Back</h2>
                 <p className="text-center text-sm text-gray-500">Sign in to your account to continue</p>
 
