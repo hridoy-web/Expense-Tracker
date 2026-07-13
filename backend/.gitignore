@@ -1,0 +1,38 @@
+# Dependency folders
+node_modules/
+jspm_packages/
+
+# Secrets & Environment Variables 
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Production Build outputs 
+dist/
+build/
+
+# Debug logs 
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Operating System Files 
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDE Configurations 
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
